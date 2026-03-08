@@ -6,11 +6,11 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-@RestController
-@RequestMapping(value = "/users")
+@RestController //requisições http(json)
+@RequestMapping(value = "/users") //define o caminho(endpoint)
 public class UserResource {
 
-    @GetMapping
+    @GetMapping //busca dados
     public ResponseEntity<User> findAll(){
         User user = new User(1,"Maria","maria@gmail.com","999999", "12345");
         return ResponseEntity.ok().body(user);
