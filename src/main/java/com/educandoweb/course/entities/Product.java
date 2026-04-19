@@ -19,11 +19,13 @@ public class Product implements Serializable {
     private Double price;
     private String imgUrl;
 
-    @ManyToMany
+    @ManyToMany //relação muito pra muitos(cria uma tabela com foreing key
     @JoinTable(name = "tb_product_category", joinColumns = @JoinColumn(name = "product_id"), inverseJoinColumns = @JoinColumn(name = "category_id"))
+    //cria tabela e suas foreig key
     private Set<Category> categories = new HashSet<>();
 
-    public Product(){}
+    public Product() {
+    }
 
     public Product(Long id, String name, String description, Double price, String imgUrl) {
         this.id = id;
