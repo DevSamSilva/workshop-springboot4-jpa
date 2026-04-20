@@ -2,12 +2,16 @@ package com.educandoweb.course.services;
 
 import com.educandoweb.course.entities.User;
 import com.educandoweb.course.repository.UserRepository;
+import com.educandoweb.course.services.exceptions.DatabaseExceptions;
 import com.educandoweb.course.services.exceptions.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.GetMapping;
 
+import java.util.EmptyStackException;
 import java.util.List;
 import java.util.Optional;
 
@@ -16,27 +20,33 @@ public class UserServices {
     @Autowired
     private UserRepository repository;
 
-    public List<User> findAll(){
-        return  repository.findAll();
+    public List<User> findAll() {
+        return repository.findAll();
     }
 
 
-    public User finfById(Long id){
+    public User finfById(Long id) {
         Optional<User> obj = repository.findById(id);
         return obj.orElseThrow(() -> new ResourceNotFoundException(id));
     }
 
-    public User insert(User obj){
-       return repository.save(obj);
+    public User insert(User obj) {
+        return repository.save(obj);
     }
 
-    public void remover(Long id){
-        repository.deleteById(id);
+    public void remover(Long id) {
+        try {
+            repository.deleteById(id);
+        } catch (EmptyResultDataAccessException e) {
+            throw new ResourceNotFoundException(id);
+        } catch (DataIntegrityViolationException e){
+            throw new DatabaseExceptions(e.getMessage());
+        }
     }
 
-    public User update(Long id, User obj){
+    public User update(Long id, User obj) {
         User entity = repository.getReferenceById(id); //instancia um usuario(ele nao vai pro bdd)
-        updateData(entity,obj);
+        updateData(entity, obj);
         return repository.save(entity);
     }
 
